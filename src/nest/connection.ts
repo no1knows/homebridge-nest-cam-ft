@@ -13,6 +13,9 @@ const APIKEY_FT = 'AIzaSyB0WNyJX2EQQujlknzTDD9jz7iVHK5Jn-U';
 const TOKEN_URL = 'https://oauth2.googleapis.com/token';
 const ISSUE_JWT_URL = 'https://nestauthproxyservice-pa.googleapis.com/v1/issue_jwt';
 const NEST_AUTH_URL = 'https://webapi.camera.home.nest.com/api/v1/login.login_nest';
+const NEST_AUTH_URL_FT = 'https://webapi.camera.home.ft.nest.com/api/v1/login.login_nest';
+const REFERER_URL = 'https://home.nest.com';
+const REFERER_URL_FT = 'https://home.ft.nest.com';
 
 // Delay after authentication fail before retrying
 const API_AUTH_FAIL_RETRY_DELAY_SECONDS = 15;
@@ -227,7 +230,7 @@ export async function nest_auth(nest_token: string, log?: Logging): Promise<stri
     req = {
       method: 'POST',
       timeout: API_TIMEOUT_SECONDS * 1000,
-      url: NEST_AUTH_URL,
+      url: ft ? NEST_AUTH_URL_FT : NEST_AUTH_URL,
       data: querystring.stringify({
         access_token: nest_token,
       }),
@@ -235,7 +238,7 @@ export async function nest_auth(nest_token: string, log?: Logging): Promise<stri
         'Content-Type': 'application/x-www-form-urlencoded',
         Authorization: 'Basic ' + nest_token,
         'User-Agent': NestEndpoints.USER_AGENT_STRING,
-        Referer: 'https://home.nest.com',
+        Referer: ft ? REFERER_URL_FT : REFERER_URL,
       },
     };
     result = (await axios(req)).data;
